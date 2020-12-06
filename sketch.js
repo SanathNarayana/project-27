@@ -1,138 +1,58 @@
-const Engine = Matter.Engine;
-const World = Matter.World;
-const Bodies = Matter.Bodies;
-const Body = Matter.Body;
 
-var particles = [];
-var plinkos = [];
-var divisions = [];
-var divisionHeight=300;
-var score =0;
-var gameState = 'start';
-var turns = 0;
-var particle;
-var count = 0;
-var score1 = false;
-var score2 = false;
-var score3 = false;
-var particle;
+const Engine = Matter.Engine;
+const World= Matter.World;
+const Bodies = Matter.Bodies; 
+const Body=Matter.Body;
+const Constraint=Matter.Constraint;
+
+var bob1,bob2,bob3,bob4,bob5,bob6;
+var toproof;
+var rope1;
 
 function setup() {
-  createCanvas(800, 800);
+  createCanvas(800,400);
+  
   engine = Engine.create();
   world = engine.world;
-  
-  ground = new Ground(width/2, height, width, 20);
-  
 
-   for (var k = 0; k <=width; k = k + 80) {
-     divisions.push(new Divisions(k, height-divisionHeight/2, 10, divisionHeight));
-   }
+  toproof= new roof(380,60,325,15);
+  bob1=new bob(380,300,30);
+  bob2=new bob(bob1.x+60,300,30);
+  bob3=new bob(bob2.x+60,300,30);
+  bob4=new bob(bob1.x-60,300,30);
+  bob5=new bob(bob4.x-60,300,30);
+  //rope1=new rope(bob1.body,toproof.body,-60*2,0);
+  string=new rope(bob1.body,toproof.body,0,0);
+  string2=new rope(bob2.body,toproof.body,60,0);
+  string3=new rope(bob3.body,toproof.body,120,0);
+  string4=new rope(bob4.body,toproof.body,-60,0);
+  string5=new rope(bob5.body,toproof.body,-120,0);
 
-
-    for (var j = 75; j <=width; j=j+50) 
-    {
-    
-       plinkos.push(new Plinko(j,75));
-    }
-
-    for (var j = 50; j <=width-10; j=j+50) 
-    {
-    
-       plinkos.push(new Plinko(j,175));
-    }
-
-     for (var j = 75; j <=width; j=j+50) 
-    {
-    
-       plinkos.push(new Plinko(j,275));
-    }
-
-     for (var j = 50; j <=width-10; j=j+50) 
-    {
-    
-       plinkos.push(new Plinko(j,375));
-    }  
 }
 
 function draw() {
-  background("black");
-  textSize(20);
- 
-
-  if(gameState != "end"){
-    textSize(20);
-    fill("white");
-   
-    text("Score: " + score, 675,40);
-    
-
-    if (particle != null) {
-      
-      mousePressed();
-      if(particle.body.position.y > 760 && particle.body.position.x > 0 && particle.body.position.x < 800){
-        if(particle.body.position.x <= 240){
-          score += 500;
-          particle = null;
-        }
-        else if(particle.body.position.x < 600){
-          score += 100;
-          particle = null;
-        }
-        else{
-          score += 200;
-          particle = null;
-        }
-        count ++;
-      }
-    }
-
-    if(count >= 5) {
-      gameState = "end";
-    }
-  }
-  else{
-    textSize(60);
-    fill("red")
-    text("GAME OVER",200,250);
-    textSize(30);
-    fill("white");
-    text("Your Score: " + score, 250,350);
-    
-  }
+  background("white");  
 
   Engine.update(engine);
+ 
+  toproof.display();
+  bob1.display();
+  bob2.display();
+  bob3.display();
+  bob4.display();
+  bob5.display();
   
-  for (var i = 0; i < plinkos.length; i++) {
-     
-    plinkos[i].display();
-     
-  }
-   
-  for (var k = 0; k < divisions.length; k++) {
-     
-   divisions[k].display();
-  }
-   
-  fill("white");
-  textSize(30);
-  text("500",15,525);
-  text("500",95,525);
-  text("500",175,525);
-
-  text("100",255,525);
-  text("100",335,525);
-  text("100",415,525);
-  text("100",495,525);
-  
-  text("200",575,525);
-  text("200",655,525);
-  text("200",735,525);
+  string.display();
+  string2.display();
+  string3.display();
+  string4.display();
+  string5.display();
 }
 
-function mousePressed(){
-    
-    particle = new Particle(mouseX,5,10);
-    score1 = false;
+function keyPressed()
+{
+  if(keyCode === UP_ARROW)
+  {
+    Body.applyForce(bob5.body,bob3.body.position,{x:-115,y:-115});
+  }
 }
-
